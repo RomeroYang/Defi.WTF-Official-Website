@@ -35,10 +35,10 @@
           <b-form-input v-model="form.content" placeholder="Content image url" clearable></b-form-input>
         </b-form-group>
       </b-form>
-      <span slot="footer" class="dialog-footer">
+      <div slot="modal-footer" class="buy-button dialog-footer">
         <b-button round @click="showDialogBuy = false">Cancel</b-button>
-        <b-button round @click="bid" class="btn-ok">Ok</b-button>
-      </span>
+        <b-button round @click.stop="bid" class="btn-ok">Ok</b-button>
+      </div>
     </b-modal>
 
     <b-modal :title="dialogTitle" id="update" class="modal">
@@ -72,6 +72,8 @@
 
 <script>
 import { get } from "lodash";
+
+import billboard from '../../../contracts/billboardInstance';
 
 export default {
   props: {
@@ -109,13 +111,36 @@ export default {
     },
     bid: function() {
       console.log("bid");
+      alert("bid");
+      web3.eth.getAccounts().then((accounts) => {
+        const newPrice = web3.utils.toWei(this.form.prePay, 'ether');
+        // this.isLoad = true;
+        return billboard.methods.buy(newPrice)
+          .send({ 
+            from: accounts[0],
+            value: newPrice,
+          });
+      }).then(() => {
+        // initialize forms
+        // this.isLoad = false;
+        // this.title = '';
+        // this.newPrice = '0.1';
+        // this.description = '';
+        // get the previous auction
+//        return auctionBox.methods.returnAllAuctions().call();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      /*
+      console.log("bid");
       const ALICE = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY";
-      const loading = this.$loading({
-        lock: true,
-        text: "Loading",
-        spinner: "el-icon-loading",
-        background: "rgba(0, 0, 0, 0.7)"
-      });
+      // const loading = this.$loading({
+      //   lock: true,
+      //   text: "Loading",
+      //   spinner: "el-icon-loading",
+      //   background: "rgba(0, 0, 0, 0.7)"
+      // });
       setTimeout(() => {
         this.$store.dispatch("basic/buy", {
           content: this.form.content,
@@ -123,15 +148,37 @@ export default {
           owner: ALICE
         });
         this.showDialogBuy = false;
-        loading.close();
+        // loading.close();
         this.$notify({
           title: "Success",
           message: "Buy billboard success",
           type: "success"
         });
-      }, 1000);
+      }, 1000);*/
     },
     setBoard: function() {
+      alert("setBoard");
+      web3.eth.getAccounts().then((accounts) => {
+        const newPrice = web3.utils.toWei(this.form.prePay, 'ether');
+        // this.isLoad = true;
+        return billboard.methods.buy(newPrice)
+          .send({ 
+            from: accounts[0],
+            value: newPrice,
+          });
+      }).then(() => {
+        // initialize forms
+        // this.isLoad = false;
+        // this.title = '';
+        // this.newPrice = '0.1';
+        // this.description = '';
+        // get the previous auction
+//        return auctionBox.methods.returnAllAuctions().call();
+        })
+        .catch((err) => {
+          console.log(err);
+        });  
+
       // console.log("setBoard");
       const ALICE = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY";
       const loading = this.$loading({
@@ -162,5 +209,19 @@ export default {
 <style lang="css">
 .board .modal {
   color: rgba(0, 0, 0, 0.8);
+}
+
+</style>
+
+
+<style scoped>
+.buy-button {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.buy-button button {
+  margin-left: 20px;
+  margin-right: 20px;
 }
 </style>
